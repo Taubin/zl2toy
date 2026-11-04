@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZL2TOY • Dusty • Auckland, New Zealand</title>
-  <meta name="description" content="Amateur radio station ZL2TOY. Dusty, Auckland, New Zealand. FT8 and digital modes on a Xiegu G90.">
+  <title>ZL2TOY • Dustin Plunkett • Auckland, New Zealand</title>
+  <meta name="description" content="Amateur radio station ZL2TOY. Dustin Plunkett, Auckland, New Zealand. FT8 and digital modes on a Xiegu G90.">
   <meta name="theme-color" content="#03070a">
   <meta name="color-scheme" content="dark">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="ZL2TOY • Dusty • Auckland, New Zealand">
+  <meta property="og:title" content="ZL2TOY • Dustin Plunkett • Auckland, New Zealand">
   <meta property="og:description" content="Amateur radio station ZL2TOY. FT8 and digital modes from Aotearoa.">
   <meta name="twitter:card" content="summary">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -199,7 +199,7 @@
             <h1 class="callsign" id="callsign">ZL2TOY</h1>
             <span class="rx-badge" id="status-badge">QRV</span>
           </div>
-          <div class="op-name" id="op-name">Dusty</div>
+          <div class="op-name" id="op-name">Dustin Plunkett</div>
           <div class="op-qth" id="op-qth">Tāmaki Makaurau • Auckland, New Zealand</div>
         </div>
 
@@ -465,11 +465,24 @@
     </footer>
   </main>
 
-  <script>
+  <script data-cfasync="false">
+    // UTC clock: its own script so nothing else on the page can stop it
+    (function () {
+      var el = document.getElementById('utc-clock');
+      function pad(n) { return String(n).padStart(2, '0'); }
+      function tick() {
+        var d = new Date();
+        el.textContent = pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()) + ':' + pad(d.getUTCSeconds()) + ' UTC';
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+  </script>
+  <script data-cfasync="false">
     // ---- Edit this block when anything changes (e.g. the move to Christchurch). Empty strings hide a row. ----
     const STATION = {
       callsign: 'ZL2TOY',
-      name: 'Dusty',
+      name: 'Dustin Plunkett',
       qth: 'Tāmaki Makaurau • Auckland, New Zealand',
       city: 'Auckland, New Zealand',
       grid: 'RF73',            // Christchurch: RE66
@@ -491,6 +504,7 @@
     };
 
     const $ = id => document.getElementById(id);
+    const pad = n => String(n).padStart(2, '0');
     document.title = `${STATION.callsign} • ${STATION.name} • ${STATION.city}`;
     $('callsign').textContent = STATION.callsign;
     $('f-call').textContent = STATION.callsign;
@@ -511,16 +525,6 @@
         if (dd.previousElementSibling) dd.previousElementSibling.hidden = false;
       }
     });
-
-    // UTC clock
-    const clock = $('utc-clock');
-    const pad = n => String(n).padStart(2, '0');
-    function tick() {
-      const d = new Date();
-      clock.textContent = `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
-    }
-    tick();
-    setInterval(tick, 1000);
 
     // Status badge: "ON AIR" only when status.json says so, otherwise "QRV"
     fetch(STATION.statusUrl, { cache: 'no-store' })
