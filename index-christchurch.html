@@ -211,9 +211,9 @@
         </div>
 
         <dl class="station-list" id="station-list">
-          <dt>Rig</dt><dd id="s-rig"></dd>
+          <dt>Rig</dt><dd id="s-rig">Xiegu G90</dd>
           <dt hidden>Antenna</dt><dd id="s-ant" hidden></dd>
-          <dt>Modes</dt><dd id="s-modes"></dd>
+          <dt>Modes</dt><dd id="s-modes">FT8 and other digital modes</dd>
           <dt hidden>Bands</dt><dd id="s-bands" hidden></dd>
           <dt hidden>QSL</dt><dd id="s-qsl" hidden></dd>
           <dt hidden>Contact</dt><dd id="s-contact" hidden></dd>
@@ -445,92 +445,30 @@
     </footer>
   </main>
 
-  <script>
-    // ---- Edit this block when anything changes (e.g. the move to Christchurch). Empty strings hide a row. ----
-    const STATION = {
-      callsign: 'ZL2TOY',
-      name: 'Dusty',
-      qth: 'Ōtautahi • Christchurch, New Zealand',
-      city: 'Christchurch, New Zealand',
-      grid: 'RE66',            // Auckland: RF73
-      cq: '32',
-      itu: '60',
-      utcOffset: '+13',        // NZDT; +12 in winter
-      rig: 'Xiegu G90',
-      antenna: '',
-      modes: 'FT8 and other digital modes',
-      bands: '',
-      qsl: '',
-      contact: '',
-      qrz: 'https://www.qrz.com/db/ZL2TOY',
-      // Optional files next to this page, written by cron on your server:
-      // status.json -> {"on_air": true}
-      // spots.json  -> [{"t":"2026-11-04T08:12:00Z","call":"JA1XYZ","band":"20m","snr":-12}]
-      statusUrl: 'status.json',
-      spotsUrl: 'spots.json'
-    };
-
-    const $ = id => document.getElementById(id);
-    document.title = `${STATION.callsign} • ${STATION.name} • ${STATION.city}`;
-    $('callsign').textContent = STATION.callsign;
-    $('f-call').textContent = STATION.callsign;
-    $('op-name').textContent = STATION.name;
-    $('op-qth').textContent = STATION.qth;
-    $('t-grid').textContent = STATION.grid;
-    $('t-cq').textContent = STATION.cq;
-    $('t-itu').textContent = STATION.itu;
-    $('t-off').textContent = STATION.utcOffset;
-    $('qrz-btn').href = STATION.qrz;
-    $('psk-btn').href = `https://pskreporter.info/pskmap.html?preset&callsign=${encodeURIComponent(STATION.callsign)}&timerange=86400`;
-
-    [['s-rig','rig'],['s-ant','antenna'],['s-modes','modes'],['s-bands','bands'],['s-qsl','qsl'],['s-contact','contact']].forEach(([id, key]) => {
-      const dd = $(id);
-      if (STATION[key]) {
-        dd.textContent = STATION[key];
-        dd.hidden = false;
-        if (dd.previousElementSibling) dd.previousElementSibling.hidden = false;
-      }
-    });
-
-    // UTC clock
-    const clock = $('utc-clock');
-    const pad = n => String(n).padStart(2, '0');
-    function tick() {
-      const d = new Date();
-      clock.textContent = `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
-    }
-    tick();
-    setInterval(tick, 1000);
-
-    // Status badge: "ON AIR" only when status.json says so, otherwise "QRV"
-    fetch(STATION.statusUrl, { cache: 'no-store' })
-      .then(r => r.ok ? r.json() : Promise.reject())
-      .then(s => {
-        if (s && s.on_air) {
-          const b = $('status-badge');
-          b.textContent = 'ON AIR';
-          b.classList.add('live');
-        }
-      })
-      .catch(() => {});
-
-    // Recent spots strip (hidden if spots.json is missing or empty)
-    fetch(STATION.spotsUrl, { cache: 'no-store' })
-      .then(r => r.ok ? r.json() : Promise.reject())
-      .then(list => {
-        if (!Array.isArray(list) || !list.length) return;
-        const rows = $('spot-rows');
-        list.slice(0, 6).forEach(s => {
-          const t = new Date(s.t);
-          const row = document.createElement('div');
-          row.className = 'spot-row';
-          [isNaN(t) ? '' : `${pad(t.getUTCHours())}:${pad(t.getUTCMinutes())}Z`, s.call || '', s.band || '', s.snr != null ? `${s.snr} dB` : '']
-            .forEach(txt => { const c = document.createElement('span'); c.textContent = txt; row.appendChild(c); });
-          rows.appendChild(row);
-        });
-        $('spots').hidden = false;
-      })
-      .catch(() => {});
+  <!-- Station details: edit this JSON (no comments allowed in JSON). Empty strings hide a row.
+       status.json  -> {"on_air": true}
+       spots.json   -> [{"t":"2026-11-04T08:12:00Z","call":"JA1XYZ","band":"20m","snr":-12}] -->
+  <script type="application/json" id="station-config">
+{
+  "callsign": "ZL2TOY",
+  "name": "Dusty",
+  "qth": "Ōtautahi • Christchurch, New Zealand",
+  "city": "Christchurch, New Zealand",
+  "grid": "RE66",
+  "cq": "32",
+  "itu": "60",
+  "utcOffset": "+13",
+  "rig": "Xiegu G90",
+  "antenna": "",
+  "modes": "FT8 and other digital modes",
+  "bands": "",
+  "qsl": "",
+  "contact": "",
+  "qrz": "https://www.qrz.com/db/ZL2TOY",
+  "statusUrl": "status.json",
+  "spotsUrl": "spots.json"
+}
   </script>
+  <script src="site.js?v=3" defer data-cfasync="false"></script>
 </body>
 </html>
